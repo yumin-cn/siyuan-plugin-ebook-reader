@@ -1,0 +1,24 @@
+{
+  "name": "siyuan-plugin-ebook-reader",
+  "author": "于民",
+  "url": "https://github.com/yumin-cn/siyuan-plugin-ebook-reader",
+  "version": "0.1.0",
+  "minAppVersion": "3.8.3",
+  "backends": ["all"],
+  "frontends": ["desktop", "desktop-window", "browser-desktop", "mobile", "browser-mobile"],
+  "displayName": {
+    "default": "YuMin eBook Reader",
+    "zh-CN": "于民·epub阅读器"
+  },
+  "description": {
+    "default": "Open .epub assets in SiYuan (native tabs on desktop, fullscreen reader on mobile): continuous scrolling, TOC, annotations, page numbers, font size and night mode.",
+    "zh-CN": "点击文档中的 .epub，桌面端在思源原生页签里、手机端在全屏阅读层中打开：连续滚动、目录、标注引用、页码、字号与夜间模式。"
+  },
+  "readme": {
+    "default": "README.md",
+    "zh-CN": "README.zh_CN.md"
+  },
+  "icon": "icon.png",
+  "preview": "preview.webp",
+  "keywords": ["epub", "ebook", "reader", "阅读器", "电子书", "于民"]
+}

@@ -1,0 +1,247 @@
+/* siyuan-plugin-ebook-reader 阅读器样式
+ * v0.2.0：按用户「修正版本.html」重做 —— 顶栏重排（字号图标/分隔线/右侧作者区）、
+ * 作者卡片 + 收款码、侧栏背景与正文统一、夜间开关太阳/月亮图标、夜间圆形侵蚀特效（幽灵层） */
+.epub-mini{position:absolute;inset:0;overflow:hidden;background:var(--b3-theme-background);outline:none}
+
+/* ---------- 工具栏（重排版：底部分隔线 + 右侧作者区） ---------- */
+.epub-mini__toolbar{position:relative;left:0;right:0;width:100%;height:42px;display:flex;align-items:center;cursor:default;padding-left:8px;padding-right:8px;box-sizing:border-box;border-bottom:1px solid var(--b3-border-color)}
+.epub-mini__toc-btn{border:none;background:transparent;color:var(--b3-theme-on-surface);cursor:pointer;padding:4px 8px;display:flex;align-items:center;font-size:13px;line-height:1.4;border-radius:var(--b3-border-radius);transition:background .15s ease;gap:4px;font-family:inherit}
+.epub-mini__toc-btn:hover{background-color:var(--b3-list-hover)}
+.epub-mini__toc-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;flex-shrink:0}
+.epub-mini__toc-btn.toggled{color:var(--b3-theme-primary);background-color:var(--b3-list-hover)}
+.epub-mini__toc-btn + .epub-mini__toc-btn{margin-left:4px}
+/* 字号框（带 A 图标） */
+.epub-mini__fsbar{display:flex;align-items:center;padding:0 4px;gap:2px;cursor:default;user-select:none;-webkit-user-select:none}
+.epub-mini__fs-icon{width:14px;height:14px;color:var(--b3-theme-on-surface-light);flex-shrink:0;stroke:currentColor;fill:none}
+.epub-mini__fs-box{width:46px;height:22px;border:1px solid var(--b3-border-color);border-radius:var(--b3-border-radius);background:var(--b3-theme-background);color:var(--b3-theme-on-background);text-align:center;font-size:12px;line-height:20px;padding:0 2px;outline:none;font-family:inherit}
+.epub-mini__fs-box:focus{border-color:var(--b3-theme-primary)}
+/* 顶栏竖分隔线 */
+.epub-mini__toolbar-divider{width:1px;height:16px;background:var(--b3-border-color);margin:0 6px;flex-shrink:0;border-radius:1px}
+/* 页码指示：方框=当前页，滚轮调页，输入回车跳转 */
+.epub-mini__pagebar{display:flex;align-items:center;padding:0 6px 0 4px;font-size:12px;color:var(--b3-theme-on-surface);cursor:default;user-select:none;-webkit-user-select:none}
+.epub-mini__page-box{width:42px;height:22px;border:1px solid var(--b3-border-color);border-radius:var(--b3-border-radius);background:var(--b3-theme-background);color:var(--b3-theme-on-background);text-align:center;font-size:12px;line-height:20px;padding:0 2px;outline:none;font-family:inherit}
+.epub-mini__page-box:focus{border-color:var(--b3-theme-primary)}
+.epub-mini__page-total{margin-left:4px;white-space:nowrap;opacity:.65}
+.epub-mini__page-tip{position:absolute;z-index:9999;display:none;background:var(--b3-theme-surface);color:var(--b3-theme-on-surface);border:1px solid var(--b3-border-color);box-shadow:var(--b3-point-shadow);border-radius:var(--b3-border-radius);padding:5px 9px;font-size:12px;line-height:1.7;pointer-events:none;white-space:nowrap}
+
+/* ---------- 作者按钮 + 卡片 ---------- */
+.epub-mini__author-btn{border:none;background:transparent;color:var(--b3-theme-on-surface);cursor:pointer;padding:4px 8px;display:flex;align-items:center;font-size:13px;line-height:1.4;border-radius:var(--b3-border-radius);transition:background .15s ease;gap:4px;font-family:inherit}
+.epub-mini__author-btn:hover{background-color:var(--b3-list-hover)}
+.epub-mini__author-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;flex-shrink:0}
+.epub-mini__author-chevron{width:11px;height:11px;margin-left:3px;opacity:.5;transition:transform .18s ease,opacity .18s ease}
+.epub-mini__author-btn:hover .epub-mini__author-chevron{opacity:.85;transform:translateX(2px)}
+
+.author-card{position:absolute;z-index:200;width:250px;background:var(--b3-menu-background);border:1px solid var(--b3-border-color);border-radius:10px;box-shadow:var(--b3-dialog-shadow);padding:14px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;font-size:13px;color:var(--b3-theme-on-surface);opacity:0;transform:translateY(-6px) scale(.98);pointer-events:none;transition:opacity .18s ease,transform .18s ease}
+.author-card.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+.author-card::before{content:"";position:absolute;top:-6px;left:var(--arrow-x,24px);width:10px;height:10px;background:var(--b3-menu-background);border-left:1px solid var(--b3-border-color);border-top:1px solid var(--b3-border-color);transform:rotate(45deg)}
+.author-card__header{display:flex;align-items:center;gap:10px}
+.author-card__avatar-link{display:block;flex-shrink:0;cursor:pointer;border-radius:50%;transition:box-shadow .18s ease,transform .18s ease}
+.author-card__avatar-link:hover{box-shadow:0 0 0 2px var(--b3-theme-primary-lightest);transform:scale(1.04)}
+.author-card__avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;object-position:center;flex-shrink:0;border:1px solid var(--b3-border-color);background:var(--b3-theme-primary-lightest);display:block}
+.author-card__avatar-fallback{width:36px;height:36px;border-radius:50%;flex-shrink:0;border:1px solid var(--b3-border-color);background:var(--b3-theme-primary-lightest);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--b3-theme-primary)}
+.author-card__name{font-size:14px;font-weight:600;color:var(--b3-theme-on-background);line-height:1.3}
+.author-card__desc{font-size:11px;color:var(--b3-theme-on-surface-light);line-height:1.4}
+.author-divider{height:1px;background:var(--b3-border-color);margin:0 -2px}
+.author-links-row{display:flex;align-items:center;justify-content:center;gap:4px;font-size:12px}
+.author-links-row a{display:flex;align-items:center;gap:4px;color:var(--b3-theme-on-surface);text-decoration:none;padding:4px 6px;border-radius:var(--b3-border-radius);transition:background .15s ease;cursor:pointer}
+.author-links-row a:hover{background-color:var(--b3-list-hover)}
+.author-links-row a svg{width:14px;height:14px;flex-shrink:0}
+.author-links-row a.douyin svg{color:var(--b3-theme-on-background)}
+.author-links-row .sep{color:var(--b3-border-color);font-size:11px;user-select:none}
+.author-reward{display:flex;flex-direction:column;gap:8px}
+.author-reward__title{font-size:12px;font-weight:500;color:var(--b3-theme-on-surface-light);text-align:center;letter-spacing:.5px}
+/* 二维码舞台：默认两码并列，悬停其一 → 它放大居中、另一个淡出（舞台高度随之撑开）。
+ * 关键：格子恒 96px 宽——悬停热区不随放大变化（变的只是 img 视觉尺寸和 left），
+ * 否则鼠标停在放大后的视觉边缘 → 格子外 → 收起 → 复位 → 又盖住鼠标 → 再放大，死循环抖动；
+ * 且放大的 img（152px 含边框）+ 标签超出格子，收起若挂在单个码的 mouseleave 上必抖，
+ * 故收起只挂「离开整个舞台」（见 tab.ts）。 */
+.author-qrcodes-stage{position:relative;width:100%;height:104px;overflow:hidden;transition:height .34s cubic-bezier(.4,0,.2,1)}
+.author-qrcodes-stage[data-active]{height:192px}
+.author-qrcode{position:absolute;top:0;width:96px;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:left .38s cubic-bezier(.4,0,.2,1),opacity .3s ease;will-change:left,opacity}
+.author-qrcode__img{width:80px;height:80px;border:1px solid var(--b3-border-color);border-radius:6px;object-fit:cover;display:block;background:var(--b3-theme-surface);background-image:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(0,0,0,.05) 8px,rgba(0,0,0,.05) 16px);transition:width .38s cubic-bezier(.4,0,.2,1),height .38s cubic-bezier(.4,0,.2,1)}
+.author-qrcode__label{font-size:11px;color:var(--b3-theme-on-surface-light);line-height:1.2;white-space:nowrap;margin-top:4px;transition:opacity .2s ease}
+.author-qrcode__label.wechat{color:#07c160}
+.author-qrcode__label.alipay{color:#1677ff}
+/* 格子 96 宽：两码图片中心 ∓48px，图片 80 宽 → 边缘间隙 16px，格子零重叠（热区互不干扰） */
+.author-qrcode[data-qr="wechat"]{left:calc(50% - 96px)}
+.author-qrcode[data-qr="alipay"]{left:calc(50%)}
+.author-qrcodes-stage[data-active="wechat"] .author-qrcode[data-qr="wechat"]{left:calc(50% - 48px);z-index:2}
+.author-qrcodes-stage[data-active="wechat"] .author-qrcode[data-qr="wechat"] .author-qrcode__img{width:150px;height:150px}
+.author-qrcodes-stage[data-active="wechat"] .author-qrcode[data-qr="alipay"]{left:calc(50% + 60px);opacity:0;pointer-events:none}
+.author-qrcodes-stage[data-active="alipay"] .author-qrcode[data-qr="alipay"]{left:calc(50% - 48px);z-index:2}
+.author-qrcodes-stage[data-active="alipay"] .author-qrcode[data-qr="alipay"] .author-qrcode__img{width:150px;height:150px}
+.author-qrcodes-stage[data-active="alipay"] .author-qrcode[data-qr="wechat"]{left:calc(50% - 156px);opacity:0;pointer-events:none}
+/* 思源环境有 img{max-width:100%} 类全局规则：放大态 img 宽 150 被钳到格子 96（高仍 150），
+ * cover 按高撑满 → 左右各裁 27px。此处 max-width:none 压掉钳制（特异度 0,2,0），
+ * 150px 溢出格子显示是安全的（舞台 220 容得下，headless 实测 35..185），热区仍恒 96 不引抖动。 */
+.author-qrcodes-stage .author-qrcode__img{max-width:none}
+
+/* ---------- 夜间开关（太阳/月亮双图标圆钮） ---------- */
+.epub-mini__night{margin-right:4px;width:34px;height:20px;border-radius:10px;border:1px solid var(--b3-border-color);background:var(--b3-theme-surface);position:relative;cursor:pointer;flex-shrink:0;transition:background .2s,border-color .2s}
+.epub-mini__night-knob{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--b3-theme-on-surface-light);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:left .2s ease,background .2s ease}
+.epub-mini__night-knob svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;position:absolute;color:#fff;transition:opacity .2s ease,transform .25s ease}
+/* 日间：太阳显示、月亮旋转缩小隐藏 */
+.epub-mini__night-knob .icon-sun{opacity:1;transform:rotate(0deg) scale(1)}
+.epub-mini__night-knob .icon-moon{opacity:0;transform:rotate(-90deg) scale(.5)}
+/* 夜间：滑钮右移变金色，月亮浮现、太阳旋出 */
+.epub-mini__night.is-night{background:#3a3d46;border-color:#4a4d57}
+.epub-mini__night.is-night .epub-mini__night-knob{left:16px;background:#f0c95c}
+.epub-mini__night.is-night .epub-mini__night-knob .icon-sun{opacity:0;transform:rotate(90deg) scale(.5)}
+.epub-mini__night.is-night .epub-mini__night-knob .icon-moon{opacity:1;transform:rotate(0deg) scale(1);color:#3a3d46}
+
+/* ---------- 夜间模式变量覆盖（工具栏/侧栏/卡片/提示全深色） ---------- */
+/* 滚动条：静止时一条极细线（约 2px），鼠标移上去才变粗 —— 与思源一致。
+ *
+ * 【手法照抄思源 globals，务必完整】思源原式：
+ *   ::-webkit-scrollbar-thumb{box-sizing:content-box;
+ *     border:4px solid transparent;              ← 透明 border 把盒子缩窄
+ *     background:transparent;                    ← 背景必须透明！
+ *     box-shadow:inset 0 0 5px 5px <色>}         ← 用 inset 阴影在 content-box 内着色
+ * ⚠ 上一版的错：把颜色写在 background 上。滚动条伪元素里 background 铺满
+ * 整个盒子（含 border 区），border 内缩根本不起作用，滑块看起来还是粗的。
+ * 必须 background:transparent + box-shadow:inset，颜色才只落在细条内。
+ * 悬停变粗 = border-width 4px → 1px（content-box 变大）。
+ *
+ * ⚠ 特异度坑：本组必须写在日间组**之前**。两条特异度相同(0,2,1)，
+ *   写在后面的日间黑滑块会把夜间也覆盖掉 → 夜间深底黑条 = 隐形。
+ *   日间那条已改用 :not(.epub-mini--night) 兜住。 */
+.epub-mini--night .epub-container::-webkit-scrollbar,
+.epub-mini--night .epub-mini__sidebar-content::-webkit-scrollbar{width:10px;height:10px}
+.epub-mini--night .epub-container::-webkit-scrollbar-track,
+.epub-mini--night .epub-mini__sidebar-content::-webkit-scrollbar-track{background:transparent}
+.epub-mini--night .epub-container::-webkit-scrollbar-thumb,
+.epub-mini--night .epub-mini__sidebar-content::-webkit-scrollbar-thumb{box-sizing:content-box;border:4px solid transparent;border-radius:5px;background:transparent;box-shadow:inset 0 0 5px 5px rgba(212,214,219,.55)}
+.epub-mini--night .epub-container::-webkit-scrollbar-thumb:hover,
+.epub-mini--night .epub-mini__sidebar-content::-webkit-scrollbar-thumb:hover{border-width:1px;box-shadow:inset 0 0 5px 5px rgba(212,214,219,.9)}
+.epub-mini--night .epub-container::-webkit-scrollbar-corner,
+.epub-mini--night .epub-mini__sidebar-content::-webkit-scrollbar-corner{background:transparent}
+.epub-mini--night{--b3-theme-background:#1b1c20;--b3-theme-surface:#222327;--b3-theme-on-surface:#a9abb1;--b3-theme-on-background:#d4d6db;--b3-theme-on-surface-light:#71737a;--b3-list-hover:#2b2c32;--b3-border-color:#35373e;--b3-theme-primary-lightest:rgba(92,138,255,.16);--b3-theme-primary-lighter:rgba(92,138,255,.28);--b3-menu-background:#222327;--b3-theme-surface-lighter:#3a3d46;--b3-dialog-shadow:0 8px 24px rgba(0,0,0,.5)}
+/* 文字标注面板：color 从浅色 body 直接继承（不走变量），夜间需显式转白（图标 stroke=currentColor） */
+.epub-mini--night .epub-mini__util,.epub-mini--night .epub-mini__util .b3-menu__item{color:#d4d6db}
+.epub-mini--night .epub-mini__util .b3-menu__icon{color:#d4d6db !important}
+
+/* 日间同一套手法（静止细条 / 悬停变粗），深灰滑块配白底。
+ * 选择器上排除 --night：否则同特异度(0,2,1)下这条会覆盖夜间组，
+ * 夜间滑块变黑、深底上等于隐形（实测踩过）。 */
+.epub-mini:not(.epub-mini--night) .epub-container::-webkit-scrollbar,
+.epub-mini:not(.epub-mini--night) .epub-mini__sidebar-content::-webkit-scrollbar{width:10px;height:10px}
+.epub-mini:not(.epub-mini--night) .epub-container::-webkit-scrollbar-track,
+.epub-mini:not(.epub-mini--night) .epub-mini__sidebar-content::-webkit-scrollbar-track{background:transparent}
+.epub-mini:not(.epub-mini--night) .epub-container::-webkit-scrollbar-thumb,
+.epub-mini:not(.epub-mini--night) .epub-mini__sidebar-content::-webkit-scrollbar-thumb{box-sizing:content-box;border:4px solid transparent;border-radius:5px;background:transparent;box-shadow:inset 0 0 5px 5px rgba(0,0,0,.32)}
+.epub-mini:not(.epub-mini--night) .epub-container::-webkit-scrollbar-thumb:hover,
+.epub-mini:not(.epub-mini--night) .epub-mini__sidebar-content::-webkit-scrollbar-thumb:hover{border-width:1px;box-shadow:inset 0 0 5px 5px rgba(0,0,0,.55)}
+.epub-mini:not(.epub-mini--night) .epub-container::-webkit-scrollbar-corner,
+.epub-mini:not(.epub-mini--night) .epub-mini__sidebar-content::-webkit-scrollbar-corner{background:transparent}
+
+/* ---------- 目录侧栏（背景与正文统一 + 右分隔线；条目留 4px 边距出圆角） ---------- */
+.epub-mini__sidebar{position:absolute;top:42px;bottom:0;width:200px;box-sizing:border-box;visibility:hidden;z-index:3;transition-duration:200ms,0ms;transition-timing-function:ease,ease;transition-property:left,visibility;transition-delay:0ms,200ms;left:-200px;background-color:var(--b3-theme-background);border-right:1px solid var(--b3-border-color)}
+.epub-mini--sidebar-open .epub-mini__sidebar{visibility:visible;left:0;transition-delay:0ms,0ms}
+.epub-mini__sidebar-content{position:absolute;top:0;bottom:0;left:0;width:100%;overflow:auto;padding:4px 0}
+.epub-mini__toc-item{display:block;padding:5px 8px;font-size:13px;line-height:1.4;color:var(--b3-theme-on-surface);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:var(--b3-border-radius);margin:0 4px}
+.epub-mini__toc-item:hover{background-color:var(--b3-list-hover)}
+.epub-mini__toc-item--active{color:var(--b3-theme-primary);background-color:var(--b3-list-hover)}
+.epub-mini__toc-empty{padding:12px 8px;font-size:12px;color:var(--b3-theme-on-surface-light)}
+/* 标注列表 */
+.epub-mini__mark-item{padding:6px 8px;font-size:12px;line-height:1.5;color:var(--b3-theme-on-surface);cursor:pointer;border-bottom:1px solid var(--b3-border-color);display:flex;align-items:center}
+.epub-mini__mark-item:hover{background-color:var(--b3-list-hover)}
+.epub-mini__mark-color{width:10px;height:10px;border-radius:2px;margin-right:6px;flex-shrink:0}
+.epub-mini__mark-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.epub-mini__mark-copy,.epub-mini__mark-del{flex-shrink:0;border:none;background:transparent;color:var(--b3-theme-on-surface);opacity:.4;cursor:pointer;padding:2px 3px;display:flex;align-items:center}
+.epub-mini__mark-copy:hover,.epub-mini__mark-del:hover{opacity:1}
+.epub-mini__mark-del:hover{color:var(--b3-theme-error,#d23f31)}
+.epub-mini__mark-copy svg,.epub-mini__mark-del svg{width:13px;height:13px;fill:none;stroke:currentColor}
+
+/* ---------- 选中文字弹层（思源 b3-menu 风格） ---------- */
+.epub-mini__util{z-index:9999;padding:8px;position:absolute;left:8px;top:46px}
+.epub-mini__util .b3-menu__item:hover{background-color:var(--b3-list-hover)}
+.epub-mini__util .epub-mini__toggle-on{background-color:var(--b3-theme-primary-lightest);color:var(--b3-theme-primary)}
+.epub-mini__util .epub-mini__color-square{width:18px;height:18px;border-radius:2px;margin:0 2px;cursor:pointer;border:1px solid var(--b3-border-color)}
+.epub-mini__util--cancel .epub-mini__colors{display:none}
+.epub-mini__toast{position:absolute;left:50%;bottom:28px;transform:translateX(-50%) translateY(8px);background-color:var(--b3-theme-primary);color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;line-height:1.5;opacity:0;transition:opacity .2s ease,transform .2s ease;z-index:10000;pointer-events:none;white-space:nowrap}
+.epub-mini__toast--on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- 正文渲染区 ---------- */
+.epub-mini__viewer{overflow:hidden;position:absolute;top:42px;right:0;bottom:0;left:0;outline:none;transition-duration:200ms;transition-timing-function:ease;transition-property:left;background-color:var(--b3-theme-background)}
+.epub-mini--sidebar-open .epub-mini__viewer{left:200px}
+/* 禁用 Chrome 原生滚动锚定：continuous 补/移章节时自己做 scrollTop 补偿，
+ * 两份补偿叠加会让视口多移一截（已读内容重现=反复横跳），只留 epub.js 的那份 */
+.epub-mini__viewer .epub-container{overflow-anchor:none;line-height:0;font-size:0}
+/* 消除 iframe 章节间的视觉缝隙：视图块零间距、iframe 走 block 顶对齐避免 inline 基线间隙 */
+.epub-mini__viewer .epub-container .epub-view{margin:0!important;padding:0!important;border:none!important;display:block}
+.epub-mini__viewer iframe{width:100%!important;height:100%!important;border:0;background-color:transparent;display:block;vertical-align:top;outline:none}
+.epub-mini__tip{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--b3-theme-on-surface-light);font-size:13px;z-index:1;pointer-events:none}
+/* ---------- 加载动画：中心扫描进度环 + 外圈三点环绕（用户 2026-10-05 原型）----------
+ * 全部用主题变量而非写死灰色：插件有日/夜两套主题，硬编码灰在夜间会瞎。
+ * 动画全走 CSS（无 JS 定时器）：上一版用 setInterval 改 textContent 累点，
+ * 要额外管 clearInterval；这里三个点各自延迟闪烁，元素移除动画自然停。 */
+.epub-mini__tip-inner{display:flex;flex-direction:column;align-items:center;gap:18px}
+.epub-mini__tip-loader{position:relative;width:64px;height:64px;display:flex;align-items:center;justify-content:center}
+/* 中心扫描环：外圈 svg 匀速自转，内圈 bar 的 dashoffset 由 0→满→空 循环 */
+.epub-mini__tip-ring{width:40px;height:40px;position:relative;z-index:2}
+.epub-mini__tip-ring svg{width:100%;height:100%;animation:epubTipSpin 4s linear infinite}
+.epub-mini__tip-ring .epub-tip-track{fill:none;stroke:var(--b3-border-color);stroke-width:3.5}
+.epub-mini__tip-ring .epub-tip-bar{fill:none;stroke:var(--b3-theme-on-surface);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:113;stroke-dashoffset:113;transform-origin:50% 50%;transform:rotate(-90deg);animation:epubTipFill 4s ease-in-out infinite}
+@keyframes epubTipSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes epubTipFill{0%{stroke-dashoffset:113}70%{stroke-dashoffset:0}100%{stroke-dashoffset:113}}
+/* 外圈三个光点：轨道运动在本体，呼吸光晕在 ::after（两者分开写，避免互相覆盖 transform） */
+.epub-mini__tip-dot{position:absolute;top:50%;left:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:var(--b3-theme-on-surface);animation:epubTipOrbit 4s linear infinite}
+.epub-mini__tip-dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;background:radial-gradient(circle,rgba(127,127,127,.35) 0%,rgba(127,127,127,0) 70%);animation:epubTipGlow 4s ease-in-out infinite;pointer-events:none}
+.epub-mini__tip-dot:nth-child(2){width:5px;height:5px;margin:-2.5px 0 0 -2.5px;opacity:.65;animation-duration:3s;animation-delay:-1s}
+.epub-mini__tip-dot:nth-child(2)::after{animation-duration:3s;animation-delay:-1s}
+.epub-mini__tip-dot:nth-child(3){width:4px;height:4px;margin:-2px 0 0 -2px;opacity:.45;animation-duration:5s;animation-delay:-2s}
+.epub-mini__tip-dot:nth-child(3)::after{animation-duration:5s;animation-delay:-2s}
+@keyframes epubTipOrbit{0%{transform:rotate(0deg) translateX(29px) rotate(0deg)}100%{transform:rotate(360deg) translateX(29px) rotate(-360deg)}}
+@keyframes epubTipGlow{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.3)}}
+/* 文字：宽字距 + padding-left 补偿，让文字与上方圆环严格视觉居中
+ * （letter-spacing 会在最后一个字右侧也留一份间距，padding-left 抵消它；
+ *  呼吸加快到 2s，比 4s 更有「正在动」的感知） */
+.epub-mini__tip-text{font-size:13px;letter-spacing:6px;padding-left:6px;text-align:center;color:var(--b3-theme-on-surface-light);animation:epubTipBreathe 2s ease-in-out infinite}
+@keyframes epubTipBreathe{0%,100%{opacity:.45}50%{opacity:1}}
+/* 错误/完成态：只要一行文字，关掉动画图形（setLoadTip(text,false) 会加上此 class） */
+.epub-mini__tip--plain .epub-mini__tip-loader{display:none}
+.epub-mini__tip--plain .epub-mini__tip-text{animation:none;opacity:1;letter-spacing:0;padding-left:0}
+
+/* ---------- 夜间切换幽灵层（圆形侵蚀特效）----------
+ * 幽灵层 = 目标态快照（双向都扩张，2026-09-29 用户拍板）：
+ * 切夜间 → 快照穿夜装（--night 修饰类 + 注入夜样式），圆从开关位置扩张盖住日间真实层；
+ * 切日间 → 快照穿日装（无修饰类、摘掉克隆来的夜样式），圆扩张盖住夜间真实层。
+ * 工具栏/侧栏克隆节点随根元素变量走；正文为同源 iframe，克隆整棵文档到幽灵
+ * iframe（见 tab.ts buildGhost），动画结束后隐藏幽灵层、真实层已就位。 */
+.epub-mini__ghost{position:absolute;inset:0;z-index:50;pointer-events:none;will-change:clip-path;clip-path:circle(0px at 100% 0%);background:var(--b3-theme-background);color:var(--b3-theme-on-background)}
+/* 夜装 = 深色变量覆盖层（挂根元素，克隆的工具栏/侧栏经继承取色；日向扩张时不挂） */
+.epub-mini__ghost--night{--b3-theme-background:#1b1c20;--b3-theme-surface:#222327;--b3-theme-on-surface:#a9abb1;--b3-theme-on-background:#d4d6db;--b3-theme-on-surface-light:#71737a;--b3-list-hover:#2b2c32;--b3-border-color:#35373e;--b3-theme-primary-lightest:rgba(92,138,255,.16);--b3-theme-primary-lighter:rgba(92,138,255,.28);--b3-menu-background:#222327;--b3-theme-surface-lighter:#3a3d46;--b3-dialog-shadow:0 8px 24px rgba(0,0,0,.5)}
+.epub-mini__ghost,.epub-mini__ghost *{pointer-events:none!important}
+/* 结算冻结（tab.ts 挂两拍后摘）：波纹收尾翻转日夜变量时压掉按钮的 hover 过渡
+ * （toc-btn background .15s、night toggle background/border .2s 等），否则幽灵层
+ * 摘掉瞬间真实层按钮当着用户面播 200ms 变色动画 = "闪一下" */
+.epub-mini--settle,.epub-mini--settle *{transition:none!important}
+/* 幽灵正文区：几何与 .epub-mini__viewer 一致（含侧栏展开位移）；overflow:hidden 但可用
+ * scrollTop 编程滚动对齐真实容器；章节块由 JS 按真实高度堆叠 */
+.epub-mini__ghost-viewer{position:absolute;top:42px;right:0;bottom:0;left:0;overflow:hidden;line-height:0;font-size:0;background:var(--b3-theme-background)}
+.epub-mini--sidebar-open .epub-mini__ghost-viewer{left:200px}
+.epub-mini__ghost-viewer iframe{width:100%!important;height:100%!important;border:0;background-color:transparent;display:block;vertical-align:top;outline:none}
+
+/* ============ 手机端（mobile.ts 的全屏覆盖层，复刻思源 openModel 模式） ============ */
+.epub-mini-mobile-layer{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;display:flex;flex-direction:column;background-color:var(--b3-theme-background);transform:translateX(-100%);transition:transform 220ms cubic-bezier(0,0,.2,1)}
+.epub-mini-mobile-layer.show{transform:translateX(0)}
+.epub-mini-m__top{flex:0 0 40px;display:flex;align-items:center;gap:4px;padding:0 6px;border-bottom:1px solid var(--b3-border-color);background-color:var(--b3-theme-surface);-webkit-user-select:none;user-select:none}
+.epub-mini-m__back{border:0;background:transparent;color:var(--b3-theme-on-surface);width:34px;height:34px;padding:0;flex:0 0 34px;cursor:pointer}
+.epub-mini-m__back svg{width:16px;height:16px}
+.epub-mini-m__title{flex:1;font-size:13px;color:var(--b3-theme-on-background);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.epub-mini-m__body{position:relative;flex:1;min-height:0}
+/* 侧栏打开时的遮罩：不做任何变暗（用户偏好），仅作为「点侧栏外收侧栏」的点击层 */
+.epub-mini-m__scrim{position:absolute;top:0;left:0;right:0;bottom:0;z-index:2;background:transparent;opacity:0;pointer-events:none;transition:opacity .2s ease}
+.epub-mini--sidebar-open + .epub-mini-m__scrim{opacity:1;pointer-events:auto}
+/* 侧栏 = 1/2 宽抽屉，正文不随动（桌面端 viewer left:200px 的跟随在手机取消） */
+.epub-mini-mobile-layer .epub-mini__sidebar{width:50%;left:-50%}
+.epub-mini-mobile-layer .epub-mini--sidebar-open .epub-mini__sidebar{left:0}
+.epub-mini-mobile-layer .epub-mini--sidebar-open .epub-mini__viewer{left:0}
+.epub-mini-mobile-layer .epub-mini--sidebar-open .epub-mini__ghost-viewer{left:0}
+/* 悬停提示在触屏无意义；作者按钮只留小人图标（藏文字+箭头），分隔线收起 */
+.epub-mini-mobile-layer .epub-mini__page-tip{display:none!important}
+.epub-mini-mobile-layer .epub-mini__author-text,.epub-mini-mobile-layer .epub-mini__author-chevron,.epub-mini-mobile-layer .epub-mini__toolbar-divider,.epub-mini-mobile-layer .epub-mini__toc-text{display:none}
+.epub-mini-mobile-layer .epub-mini__author-btn{padding:4px 6px}
+.epub-mini-mobile-layer .epub-mini__toolbar{padding-left:4px;padding-right:4px}
+.epub-mini-mobile-layer .epub-mini__toc-btn{padding:4px 6px;font-size:12px}
+.epub-mini-mobile-layer .epub-mini__fs-box,.epub-mini-mobile-layer .epub-mini__page-box{width:44px}

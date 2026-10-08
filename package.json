@@ -1,0 +1,24 @@
+{
+  "name": "siyuan-plugin-ebook-reader",
+  "version": "0.1.0",
+  "description": "Open .epub assets in a native SiYuan tab: continuous scroll, TOC, annotations, night mode.",
+  "author": "yumin",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "vite build",
+    "check": "tsc --noEmit",
+    "package": "npm run build && node scripts/package.mjs",
+    "watch": "vite build --watch"
+  },
+  "dependencies": {
+    "@likecoin/epub-ts": "^0.7.2",
+    "siyuan": "^1.0.9"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "adm-zip": "^0.5.16",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "ws": "^8.21.3"
+  }
+}
