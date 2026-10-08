@@ -1,15 +1,15 @@
-# YuMin eBook Reader
+# 于民·epub阅读器
 
-[简体中文](README.zh_CN.md)
+[English](README.en.md)
 
-Read epub ebooks right inside SiYuan Notes, on both desktop and mobile.
+在思源笔记里直接读 epub 电子书，电脑和手机都能用。
 
-- **Open and read**: once the plugin is installed and enabled, click an epub file to read it and take notes side by side
-- **Smooth scrolling**: the text loads automatically as you scroll — no manual chapter switching
-- **TOC navigation**: the sidebar TOC can be toggled anytime with `Tab`
-- **Highlights**: right-click selected text to highlight it, right-click again to copy; click an annotation link to jump back to that spot
-- **Mobile**: fullscreen reading, swipe left or right to toggle the sidebar, tap selected text to highlight or copy it
-- **Everything remembered**: font size, reading position and night mode are saved per book, so you always resume where you left off
-- **Night mode**: one-tap switch turns the whole page dark, easy on the eyes at night
+- **打开即读**：安装开启插件后，点击 epub 文件即可一边看书一边做笔记
+- **顺畅翻页**：采用滚动自动加载正文，不用手动翻章
+- **目录导航**：侧边目录可按 `Tab` 一键开关
+- **划线标注**：对选取文字右键可速标，再次右键可复制，点标注链接跳转对应位置
+- **手机端**：全屏阅读，左右滑动开关目录，点击选中的文字就能标注和复制
+- **自动记忆**：字号、进度、夜间模式，每本书各自记住，下次打开接着读
+- **夜间模式**：一键切换，全文变暗色，晚上看书不刺眼
 
-See the [usage guide](USAGE.md) (Chinese) for details.
+详细操作说明见[使用指南](USAGE.md)。
