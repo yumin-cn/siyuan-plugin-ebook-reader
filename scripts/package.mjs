@@ -20,8 +20,9 @@ const zip = new AdmZip();
 for (const f of [
     "plugin.json", "index.js", "index.css",
     "icon.png", "preview.webp",
-    "README.md", "README.zh_CN.md", "CHANGELOG.md",
-    "THIRD-PARTY-NOTICES.md" // 第三方组件声明（BSD-2/MIT 分发义务）
+    "README.md", "README.en.md", "CHANGELOG.md",
+    "THIRD-PARTY-NOTICES.md", // 第三方组件声明（BSD-2/MIT 分发义务）
+    "LICENSE"
 ]) {
     if (fs.existsSync(path.join(root, f))) zip.addLocalFile(path.join(root, f));
 }

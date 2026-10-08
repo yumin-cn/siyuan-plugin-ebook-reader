@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Open .epub assets in a native SiYuan tab: continuous scroll, TOC, annotations, night mode.",
   "author": "yumin",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "vite build",
     "check": "tsc --noEmit",

@@ -1,6 +1,6 @@
 # YuMin eBook Reader
 
-[简体中文](README.md)
+[简体中文](README.zh_CN.md)
 
 Read epub ebooks right inside SiYuan Notes, on both desktop and mobile.
 

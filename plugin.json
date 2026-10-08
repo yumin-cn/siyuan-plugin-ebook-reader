@@ -15,8 +15,8 @@
     "zh-CN": "点击文档中的 .epub，桌面端在思源原生页签里、手机端在全屏阅读层中打开：连续滚动、目录、标注引用、页码、字号与夜间模式。"
   },
   "readme": {
-    "default": "README.md",
-    "zh-CN": "README.zh_CN.md"
+    "default": "README.en.md",
+    "zh-CN": "README.md"
   },
   "icon": "icon.png",
   "preview": "preview.webp",
